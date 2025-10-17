@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tư vấn Chăm sóc Sức khỏe Cá nhân</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #b7eaff 0%, #d0f8ce 100%);
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 540px;
+            margin: 50px auto 0 auto;
+            background: linear-gradient(120deg, #e6f9f6 0%, #f5fff6 100%);
+            padding: 42px 38px 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(56, 142, 60, 0.15), 0 2px 10px rgba(33, 150, 243, 0.09);
+        }
+        h2 {
+            color: #0a9276;
+            text-align: center;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+            text-shadow: 0 2px 0 #c8fff4, 0 1.5px 0 #b2f2e5;
+        }
+        label {
+            display: block;
+            margin-top: 17px;
+            color: #027368;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+        input, select {
+            width: 100%;
+            padding: 11px 15px;
+            margin-top: 5px;
+            border-radius: 9px;
+            border: 1.5px solid #5ed0bb;
+            background: #f9fefd;
+            font-size: 16px;
+            transition: border 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 9px rgba(44, 196, 168, 0.04);
+        }
+        input:focus, select:focus {
+            border: 1.7px solid #29b6f6;
+            outline: none;
+            background: #e8f8ff;
+            box-shadow: 0 2px 13px rgba(41, 182, 246, 0.14);
+        }
+        button {
+            margin-top: 28px;
+            padding: 13px 0;
+            width: 100%;
+            background: linear-gradient(90deg, #38e38e 45%, #36b3ec 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(44, 196, 168, 0.12);
+            letter-spacing: 0.8px;
+            transition: background 0.18s, box-shadow 0.2s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #11c77e 55%, #10aee3 100%);
+            box-shadow: 0 7px 21px rgba(33, 150, 243, 0.14);
+        }
+        .result {
+            margin-top: 36px;
+            padding: 26px 24px 12px 24px;
+            background: linear-gradient(120deg, #f3feff 60%, #e4ffe9 100%);
+            border-radius: 16px;
+            box-shadow: 0 3px 16px rgba(57, 183, 141, 0.10);
+            animation: fadeIn .8s;
+        }
+        @keyframes fadeIn {
+            from {opacity:0; transform:translateY(20px);}
+            to {opacity:1; transform:translateY(0);}
+        }
+        .section {
+            margin-bottom: 19px;
+        }
+        .highlight {
+            background: #b2f7e1;
+            padding: 7px 16px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 5px;
+            font-size: 15px;
+            color: #008c5f;
+            font-weight: 500;
+            box-shadow: 0 1.5px 4px rgba(38, 198, 218, 0.12);
+        }
+        ul {
+            margin: 10px 0 0 25px;
+        }
+        .status-good { color: #1ea958; font-weight: bold; }
+        .status-warning { color: #ff9800; font-weight: bold; }
+        .status-bad { color: #e53935; font-weight: bold; }
+        .advice {
+            margin-top: 12px;
+            background: #f7fff2;
+            color: #d84315;
+            padding: 11px 17px;
+            border-radius: 8px;
+            border-left: 7px solid #dbffb4;
+            font-size: 15.5px;
+            box-shadow: 0 2px 8px rgba(180,245,122,0.10);
+        }
+        .sub-list { margin-left: 18px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Tư vấn Chăm sóc Sức khỏe Cá nhân</h2>
+        <form id="healthForm" autocomplete="off">
+            <label for="height">Chiều cao (cm):</label>
+            <input type="number" id="height" required min="100" max="250">
+
+            <label for="weight">Cân nặng (kg):</label>
+            <input type="number" id="weight" required min="30" max="200">
+
+            <label for="age">Độ tuổi:</label>
+            <input type="number" id="age" required min="10" max="100">
+
+            <label for="gender">Giới tính:</label>
+            <select id="gender" required>
+                <option value="">Chọn giới tính</option>
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+            </select>
+
+            <label for="goal">Mục tiêu:</label>
+            <select id="goal" required>
+                <option value="">Chọn mục tiêu</option>
+                <option value="gain">Tăng cân</option>
+                <option value="lose">Giảm cân</option>
+                <option value="maintain">Duy trì cân nặng</option>
+            </select>
+
+            <button type="submit">Nhận tư vấn</button>
+        </form>
+        <div class="result" id="result" style="display:none;">
+            <div class="section" id="status"></div>
+            <div class="section" id="advice"></div>
+            <div class="section" id="calorie"></div>
+            <div class="section" id="food"></div>
+            <div class="section" id="workout"></div>
+        </div>
+    </div>
+    <script>
+        // Thức ăn phong phú hơn
+        const foodList = {
+            gain: [
+                "Tăng khẩu phần ăn, ưu tiên thực phẩm giàu protein và chất béo tốt:",
+                "<ul class='sub-list'><li>Thịt bò, thịt gà, heo nạc, trứng, cá hồi, cá thu, tôm</li><li>Phô mai, sữa tươi, sữa đặc, sữa chua, bơ đậu phộng</li><li>Các loại hạt (óc chó, hạnh nhân, đậu phộng, hạt bí, hạt điều)</li><li>Cơm, bún, bánh mì, khoai lang, ngô, yến mạch, mì ống</li><li>Chuối, xoài, bơ, dưa hấu</li></ul>",
+                "Ăn thêm bữa phụ: sinh tố trái cây, bánh mì phô mai, sữa chua, granola",
+                "Ăn thường xuyên các món xào dầu oliu hoặc bơ",
+                "Bổ sung protein shake sau tập luyện"
+            ],
+            lose: [
+                "Ưu tiên thực phẩm ít calo, giàu xơ & protein:",
+                "<ul class='sub-list'><li>Đậu phụ, thịt gà không da, cá hấp, trứng luộc</li><li>Rau củ: súp lơ, bí xanh, mướp, cải bó xôi, rau muống, cải ngọt</li><li>Cơm gạo lứt, khoai lang, yến mạch, miến dong</li><li>Trái cây ít ngọt: táo, bưởi, dưa hấu, lê, thanh long</li><li>Sữa không đường, sữa hạnh nhân</li></ul>",
+                "Ăn nhiều món luộc, hấp, hạn chế món chiên xào và đồ ngọt",
+                "Chia nhỏ bữa ăn (4-5 bữa/ngày), không bỏ bữa sáng",
+                "Uống nước lọc, trà xanh, tránh nước ngọt có ga"
+            ],
+            maintain: [
+                "Ăn đa dạng, cân bằng các nhóm chất:",
+                "<ul class='sub-list'><li>Protein: thịt nạc, cá, trứng, tôm, đậu phụ</li><li>Tinh bột: cơm, bánh mì, khoai, mì, yến mạch</li><li>Chất xơ: rau xanh, củ quả, trái cây tươi</li><li>Chất béo tốt: dầu oliu, quả bơ, cá hồi, hạt các loại</li></ul>",
+                "Ăn đúng bữa, hạn chế thức ăn nhanh, đồ nhiều dầu mỡ",
+                "Uống đủ nước (1.5-2 lít/ngày), ăn vừa phải đồ ngọt"
+            ]
+        };
+
+        // Bài tập phong phú hơn
+        const workoutList = {
+            gain: [
+                "Tập trung tăng cơ và sức mạnh:",
+                "<ul class='sub-list'><li>Gym: nâng tạ, bench press, squat, deadlift, shoulder press (3-5 buổi/tuần)</li><li>Bodyweight: hít đất, plank, dips, pull-up, lunge</li><li>Yoga tăng sức mạnh cơ: power yoga, plank yoga</li></ul>",
+                "Sau buổi tập nên bổ sung protein shake",
+                "Cardio nhẹ 1-2 lần/tuần: đi bộ nhanh, đạp xe nhẹ"
+            ],
+            lose: [
+                "Đốt mỡ toàn thân kết hợp tăng cơ:",
+                "<ul class='sub-list'><li>Cardio: chạy bộ, nhảy dây, leo cầu thang, HIIT, aerobic, Zumba</li><li>Bodyweight: squat, lunge, plank, mountain climber, jumping jack</li><li>Bơi lội, đạp xe, tập nhảy group X</li></ul>",
+                "Tập gym nhẹ (full body) 2-3 buổi/tuần để duy trì cơ bắp",
+                "Tập yoga hoặc pilates để tăng dẻo dai và giảm stress"
+            ],
+            maintain: [
+                "Duy trì vận động đều đặn, đa dạng:",
+                "<ul class='sub-list'><li>Đi bộ nhanh/ngày (30 phút), đạp xe, bơi lội, cầu lông</li><li>Gym nhẹ: tập máy, tập tạ vừa phải, plank, squat, nâng chân</li><li>Yoga, pilates, nhảy hiện đại, zumba</li></ul>",
+                "Kết hợp các bài tập sức bền và dẻo dai trong tuần",
+                "Tham gia các hoạt động ngoài trời: leo núi, bóng đá, bóng chuyền"
+            ]
+        };
+
+        function getBMI(weight, height) {
+            return weight / Math.pow(height / 100, 2);
+        }
+
+        function getStatus(bmi) {
+            if (bmi < 18.5) {
+                return {text: "Thiếu cân", class: "status-bad"};
+            } else if (bmi < 23) {
+                return {text: "Bình thường", class: "status-good"};
+            } else if (bmi < 25) {
+                return {text: "Thừa cân", class: "status-warning"};
+            } else if (bmi < 30) {
+                return {text: "Béo phì độ I", class: "status-bad"};
+            } else {
+                return {text: "Béo phì độ II", class: "status-bad"};
+            }
+        }
+
+        function getHealthAdvice(goal, tdee) {
+            if (goal === "gain") return Math.round(tdee + 350);
+            if (goal === "lose") return Math.round(tdee - 350);
+            return Math.round(tdee);
+        }
+
+        function getIdealWeight(height, gender) {
+            // Công thức Lorentz cho cân nặng hợp lý
+            if (gender === "male") {
+                return Math.round((height - 100) - (height - 150) / 4);
+            } else {
+                return Math.round((height - 100) - (height - 150) / 2.5);
+            }
+        }
+
+        document.getElementById('healthForm').onsubmit = function(e) {
+            e.preventDefault();
+            // Lấy dữ liệu
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const age = parseInt(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const goal = document.getElementById('goal').value;
+
+            // BMI & tình trạng sức khỏe
+            const bmi = getBMI(weight, height);
+            const statusObj = getStatus(bmi);
+
+            // Cân nặng lý tưởng
+            const idealWeight = getIdealWeight(height, gender);
+
+            // BMR
+            let bmr;
+            if (gender === "male") {
+                bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+            } else {
+                bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+            }
+            // TDEE (giả định vận động trung bình)
+            let tdee = bmr * 1.55;
+
+            // Lượng calo khuyến nghị
+            const calo = getHealthAdvice(goal, tdee);
+            let caloMsg = "";
+            if (goal === "gain") {
+                caloMsg = `Bạn nên nạp khoảng <b>${calo} kcal/ngày</b> để tăng cân lành mạnh (~0.5kg/tuần).`;
+            } else if (goal === "lose") {
+                caloMsg = `Bạn nên nạp khoảng <b>${calo} kcal/ngày</b> để giảm cân an toàn (~0.5kg/tuần).`;
+            } else {
+                caloMsg = `Bạn nên duy trì mức <b>${calo} kcal/ngày</b> để giữ cân nặng ổn định.`;
+            }
+
+            // Tư vấn cân nặng hợp lý
+            let advice = "";
+            // Nếu quá gầy mà muốn giảm cân => nên tăng cân
+            if (bmi < 18.5 && goal === "lose") {
+                advice = `<div class="advice">
+                    Bạn đang <b>thiếu cân</b>, KHÔNG nên giảm cân. Bạn nên tăng cân lên <b>${idealWeight - weight} kg</b> để đạt mức hợp lý (~${idealWeight}kg).
+                </div>`;
+            }
+            // Nếu quá nặng mà muốn giảm cân => ghi số cân cần giảm
+            if (bmi >= 23 && goal === "lose") {
+                const lose = weight - idealWeight;
+                if (lose > 0)
+                    advice = `<div class="advice">
+                        Bạn nên giảm khoảng <b>${lose} kg</b> để đạt cân nặng hợp lý (~${idealWeight}kg).
+                    </div>`;
+            }
+            // Nếu quá gầy mà muốn tăng cân => ghi số cân nên tăng
+            if (bmi < 18.5 && goal === "gain") {
+                const gain = idealWeight - weight;
+                if (gain > 0)
+                    advice = `<div class="advice">
+                        Bạn nên tăng khoảng <b>${gain} kg</b> để đạt cân nặng hợp lý (~${idealWeight}kg).
+                    </div>`;
+            }
+            // Nếu quá cân mà muốn tăng cân => nên giảm cân
+            if (bmi >= 23 && goal === "gain") {
+                advice = `<div class="advice">
+                    Bạn đang <b>thừa cân</b>, KHÔNG nên tăng cân. Bạn nên giảm cân xuống <b>${weight - idealWeight} kg</b> để đạt mức hợp lý (~${idealWeight}kg).
+                </div>`;
+            }
+
+            // Hiển thị
+            document.getElementById('status').innerHTML =
+                `<b>Tình trạng sức khỏe (theo BMI):</b> <span class="${statusObj.class}">${statusObj.text}</span>
+                <br>BMI của bạn: <span class="highlight">${bmi.toFixed(1)}</span>`;
+            document.getElementById('advice').innerHTML = advice;
+            document.getElementById('calorie').innerHTML = `<b>Lượng calo khuyến nghị:</b> <br>${caloMsg}`;
+            document.getElementById('food').innerHTML =
+                `<b>Gợi ý thực phẩm:</b><ul>${foodList[goal].map(f=>f.startsWith('<ul')?f:`<li>${f}</li>`).join('')}</ul>`;
+            document.getElementById('workout').innerHTML =
+                `<b>Gợi ý luyện tập:</b><ul>${workoutList[goal].map(w=>w.startsWith('<ul')?w:`<li>${w}</li>`).join('')}</ul>`;
+            document.getElementById('result').style.display = "block";
+        }
+    </script>
+</body>
+</html>
